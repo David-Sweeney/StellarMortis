@@ -611,10 +611,10 @@ def plot(tables, output_dir, plot, bright_threshold=0*u.mag, logger=None, verbos
         plt.savefig(f'{output_dir}/{filename2}.png')
         plt.close()
     elif plot in ['Event locations']:
-        smallest_undersample = min([table.undersample for table in tables])
 
         plt.figure()
         all_longs = []
+        all_weights = []
         for table in tables:
             sc = SkyCoord(ra=table.bright['bgs.ra'], dec=table.bright['bgs.dec'],
                           frame='icrs').transform_to(Galactic)
@@ -623,12 +623,12 @@ def plot(tables, output_dir, plot, bright_threshold=0*u.mag, logger=None, verbos
             # Recentre longitudes in [-180, 180] instead of [0, 360]
             longs[longs > 180] -= 360
             
-            # Repeat longitudes to match the undersampling
-            all_longs.append(np.repeat(longs, int(table.undersample/smallest_undersample)))
+            all_longs.append(longs)
+            all_weights.append(table.undersample * np.ones_like(longs))
                 
             sns.kdeplot(longs, bw_adjust=1, color=table.colour, label=table.species)
         
-        sns.kdeplot(np.hstack(all_longs), bw_adjust=1, color='k', zorder=1.5, label='All')
+        sns.kdeplot(np.hstack(all_longs), bw_adjust=1, weights=all_weights, color='k', zorder=1.5, label='All')
 
         plt.xlabel('Galactic Longitude (deg)')
         plt.ylabel('Density')
@@ -642,14 +642,15 @@ def plot(tables, output_dir, plot, bright_threshold=0*u.mag, logger=None, verbos
         
         plt.figure()
         all_lats = []
+        all_weights = []
         for table in tables:
             sc = SkyCoord(ra=table.bright['bgs.ra'], dec=table.bright['bgs.dec'],
                           frame='icrs').transform_to(Galactic)
             
             lats = sc.b.to(u.deg).value
             
-            # Repeat latitudes to match the undersampling
-            all_lats.append(np.repeat(lats, int(table.undersample/smallest_undersample)))
+            all_lats.append(lats)
+            all_weights.append(table.undersample * np.ones_like(lats))
                 
             sns.kdeplot(lats, bw_adjust=1, color=table.colour, label=table.species)
         

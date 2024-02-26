@@ -22,8 +22,8 @@ setuptools.setup(
 	packages=["stellarmortis"], 
 	description=DESCRIPTION, 
 	long_description=DESCRIPTION, 
-	url="https://github.com/gituser/test-tackage",  # TODO
+	url="https://github.com/David-Sweeney/StellarMortis",
 	license='MIT', 
 	python_requires='>=3.8', 
 	install_requires=REQUIRED_PACKAGES 
-) 
+)

@@ -39,8 +39,9 @@ if __name__ == '__main__':
     
     # Use case - plot microlensing run
     base_filepath = '/import/morgana2/snert/david/Gravitational_Lensing/Incidence/Data/'
-    sm.plot_microlensing({'Black Hole': base_filepath + '10000_year_lensing_results_all_GUW_paper_mag.ecsv',
-                          'Neutron Star': base_filepath + '10000_year_lensing_results_all_GUW_paper_mag.ecsv',
+    sm.plot_microlensing({
+                        #   'Black Hole': base_filepath + '10000_year_lensing_results_all_GUW_paper_mag.ecsv',
+                        #   'Neutron Star': base_filepath + '10000_year_lensing_results_all_GUW_paper_mag.ecsv',
                           'Star': base_filepath + '100000_year_lensing_results_milkyway_all_MW_paper_mag.ecsv'}, 
                          {'Black Hole': 1e3, 'Neutron Star': 1e3, 'Star': 1e6}, output_dir='../plots')
     
