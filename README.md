@@ -7,7 +7,7 @@
  
 StellarMortis is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
-This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (currently under review) with some significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
+This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (currently under review) with significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
 
 ## Installation
 To install StellarMortis simply use pip:
@@ -79,9 +79,9 @@ In general, if you do not intend to calculate the microlensing events caused by 
 As demonstrated in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)*, natal kicks play a big role in the distribution of the galactic underworld. The `NatalKick` class provides a simple interface to apply natal kicks to the population of dead stars. The `NatalKick` class is instantiated with a dictionary containing the natal kicks to be applied to each species of dead star. The keys of the dictionary are the species of dead star and the values are the natal kicks to be applied. The natal kick can be specified as a single value in km/s, a string specifiying one of the pre-defined natal kicks or a function which takes the mass of the remnant ($m_r$) and the mass of the progenitor star ($m_p$) as arguments and returns the natal kick in km/s. The pre-defined natal kicks are:
 
 - `Hobbs2005` &mdash; The natal kicks from [Hobbs et al. (2005)](https://ui.adsabs.harvard.edu/abs/2005MNRAS.360..974H/abstract).
-- `Igoshev2020` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.1420I/abstract) for the young pulsars.
-- `Igoshev2020All` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.1420I/abstract) for all measured pulsars.
-- `Renzo2018` &mdash; The natal kicks from [Renzo et al. (2018)](https://ui.adsabs.harvard.edu/abs/2018MNRAS.477.4685R/abstract).
+- `Igoshev2020` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for the young pulsars.
+- `Igoshev2020All` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for all measured pulsars.
+- `Renzo2018` &mdash; The natal kicks from [Renzo et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019A&A...624A..66R) which describe the natal kicks experienced by neutron star binaries in which the neutron star remains in the binary.
 
 Each pre-defined natal kick also has a corresponding `scaled` version which scales the natal kicks by a factor of $1.35/m_r$. This is intended to be used on the black holes if the natal kicks are to be scaled by the mass of the remnant (i.e. to provide the same momentum to all neutron stars and black holes). $1.35$ is taken to be the average mass of a neutron star in solar masses.
 
