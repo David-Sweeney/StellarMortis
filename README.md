@@ -1,4 +1,9 @@
 # StellarMortis
+
+[![PyPI version](https://badge.fury.io/py/stellarmortis.svg)](https://badge.fury.io/py/stellarmortis)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) 
+
+#### Note that this package is still under development and, although functional, is not yet fully documented. If you have any questions or need help using the package, please feel free to contact me (my email is given in the paper below).
  
 StellarMortis is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
