@@ -7,7 +7,7 @@
  
 StellarMortis is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
-This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (as yet unpublished) with some modifications. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
+This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (currently under review) with some significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
 
 ## Installation
 To install StellarMortis simply use pip:
@@ -124,10 +124,14 @@ StellarMortis also provides a simple interface to simulate the microlensing of a
 If the microlensing events are to be calculated immediately after the population is evolved then the `Underworld` object can be used to calculate the microlensing events. This is done by calling the `.calculate_microlensing()` method. The method takes the following parameters:
 
 - `run_name` &mdash; The name of the run. This will be used to name the output file.
-- `output_filepath` &mdash; The filepath of the output file. The output file will be saved as an ECSV file.
 - `years` &mdash; The duration of the microlensing simulation in years.
-- `num_workers` &mdash; The number of workers to use. If set to `-1` then the number of workers will be set to the number of cores on the machine.
 - `collate` &mdash; If `True` then the output file will be collated into a single file. If `False` then the output file will be saved as a separate file for each species of dead star.
+- `output_filepath` &mdash; The filepath of the output file. The output file will be saved as an ECSV file.
+- `progress_dir` &mdash; The directory to save the progress files to. If `None` then no progress files will be saved.
+- `sensitivity` &mdash; The sensitivity of the microlensing event. This is the Einstein radius in microarcseconds.
+- `num_workers` &mdash; The number of workers to use. If set to `-1` then the number of workers will be set to the number of cores on the machine.
+- `start` &mdash; The index of the first microlensing event to be simulated.
+- `end` &mdash; The index of the last microlensing event to be simulated.
 
 For example:
 
@@ -139,11 +143,20 @@ This will calculate the microlensing events caused by the population of black ho
 ### Starting from a CSV file
 If the microlensing events are to be calculated at a later time then the microlensing events can be calculated from a CSV file. This is done by instantiating a `Microlensing` object and calling the `calculate_microlensing()` function. The method takes the following parameters:
 
+- `filepath` &mdash; The filepath of the CSV file containing the microlensing events.
 - `run_name` &mdash; The name of the run. This will be used to name the output file.
-- `output_filepath` &mdash; The filepath of the output file. The output file will be saved as an ECSV file.
 - `years` &mdash; The duration of the microlensing simulation in years.
-- `num_workers` &mdash; The number of workers to use. If set to `-1` then the number of workers will be set to the number of cores on the machine.
 - `collate` &mdash; If `True` then the output file will be collated into a single file. If `False` then the output file will be saved as a separate file for each species of dead star.
+- `output_filepath` &mdash; The filepath of the output file. The output file will be saved as an ECSV file.
+- `progress_dir` &mdash; The directory to save the progress files to. If `None` then no progress files will be saved.
+- `sensitivity` &mdash; The sensitivity of the microlensing event. This is the Einstein radius in microarcseconds.
+- `num_workers` &mdash; The number of workers to use. If set to `-1` then the number of workers will be set to the number of cores on the machine.
+- `start` &mdash; The index of the first microlensing event to be simulated.
+- `end` &mdash; The index of the last microlensing event to be simulated.
+- `logger` &mdash; The logger to use. If `None` then a new logger will be created.
+- `logging_file` &mdash; The filepath of the logging file. If `None` then no logging file will be created.
+- `append_logging` &mdash; If `True` then the logging file will be appended to. If `False` then the logging file will be overwritten.
+- `verbose` &mdash; The verbosity of the logging messages.
 
 For example:
 
@@ -162,6 +175,9 @@ The microlensing events can be plotted using the `.plot_microlensing()` method. 
 - `undersamples` &mdash; A dictionary containing the undersampling factor for each species of dead star. The keys of the dictionary are the species of dead star and the values are the undersampling factor. The undersampling factor is the number of microlensing events to be plotted. For example, if the undersampling factor is $10^4$ then only $1$ in $10^4$ microlensing events will be plotted.
 - `other_filepaths` &mdash; A list of filepaths to other microlensing event files to be plotted.
 - `output_dir` &mdash; The directory to save the plots to.
+- `bootstraps` &mdash; The number of bootstraps to perform. If set to `0` then no bootstraps will be performed.
+- `trim_data` &mdash; If `True` then the data will be trimmed to the same length. If `False` then the data will not be trimmed.
+- `save_summary` &mdash; If `True` then the summary statistics will be saved to a file.
 
 For example:
 
@@ -174,9 +190,16 @@ This will plot the microlensing events caused by the population of black holes a
 
 The microlensing events can be plotted using the `plot_microlensing()` function. The method takes the following parameters:
 
+- `filepaths` &mdash; A list of filepaths to the microlensing event files to be plotted.
 - `undersamples` &mdash; A dictionary containing the undersampling factor for each species of dead star. The keys of the dictionary are the species of dead star and the values are the undersampling factor. The undersampling factor is the number of microlensing events to be plotted. For example, if the undersampling factor is $10^4$ then only $1$ in $10^4$ microlensing events will be plotted.
-- `other_filepaths` &mdash; A list of filepaths to other microlensing event files to be plotted.
 - `output_dir` &mdash; The directory to save the plots to.
+- `bootstraps` &mdash; The number of bootstraps to perform. If set to `0` then no bootstraps will be performed.
+- `trim_data` &mdash; If `True` then the data will be trimmed to the same length. If `False` then the data will not be trimmed.
+- `save_summary` &mdash; If `True` then the summary statistics will be saved to a file.
+- `logger` &mdash; The logger to use. If `None` then a new logger will be created.
+- `logging_file` &mdash; The filepath of the logging file. If `None` then no logging file will be created.
+- `append_logging` &mdash; If `True` then the logging file will be appended to. If `False` then the logging file will be overwritten.
+- `verbose` &mdash; The verbosity of the logging messages.
 
 
 

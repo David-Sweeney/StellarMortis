@@ -269,7 +269,7 @@ class Underworld():
 
 def calculate_microlensing(filepath, run_name, years, collate=True, output_filepath=None, 
                            progress_dir=None, sensitivity=1*u.uas, num_workers=1, start=0, end=None,
-                           logger=None, logging_file=None, append_logging=True, verbose=0):
+                           logger=None, logging_file=None, append_logging=True, verbose=1):
     """Calculate microlensing for a given galaxy data file.
     
     Args:
