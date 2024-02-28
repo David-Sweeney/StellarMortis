@@ -21,12 +21,12 @@ LONG_DESCRIPTION = \
 
 setuptools.setup( 
 	name="stellarmortis",
-	version="0.0.8",
+	version="0.0.9",
 	author="David Sweeney", 
 	author_email="david.sweeney@sydney.edu.au", 
 	packages=setuptools.find_packages(), 
 	description=DESCRIPTION, 
-	long_description=DESCRIPTION, 
+	long_description=LONG_DESCRIPTION, 
 	url="https://github.com/David-Sweeney/StellarMortis",
 	license='MIT', 
 	python_requires='>=3.7', 
