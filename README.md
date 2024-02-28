@@ -81,7 +81,7 @@ As demonstrated in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/
 - `Hobbs2005` &mdash; The natal kicks from [Hobbs et al. (2005)](https://ui.adsabs.harvard.edu/abs/2005MNRAS.360..974H/abstract).
 - `Igoshev2020` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for the young pulsars.
 - `Igoshev2020All` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for all measured pulsars.
-- `Renzo2018` &mdash; The natal kicks from [Renzo et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019A&A...624A..66R) which describe the natal kicks experienced by neutron star binaries in which the neutron star remains in the binary.
+- `Renzo2018` &mdash; The natal kicks from [Renzo et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019A&A...624A..66R) which describe the natal kicks experienced by entire neutron star binary systems in which the neutron star remains in the binary.
 
 Each pre-defined natal kick distribution also has a corresponding `scaled` version which scales the natal kicks by a factor of $1.35/m_r$. This is intended to be used on the black holes if the natal kicks are to be scaled by the mass of the remnant (i.e. to provide the same momentum to all neutron stars and black holes). $1.35 M_{\odot}$ is taken to be the average mass of a neutron star in solar masses.
 
