@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/stellarmortis.svg)](https://badge.fury.io/py/stellarmortis)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) 
 
-#### Note that this package is still under development and, although functional, is not yet fully documented. If you have any questions or need help using the package, please feel free to contact me (my email is given in the paper below).
+#### Note that this package is still under development and, although functional, is not yet fully documented. If you have any questions or need help using the package, please feel free to contact me (my email is given in the paper below). I will be happy to help you get started.
  
 StellarMortis is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
@@ -26,7 +26,7 @@ StellarMortis is designed to be as simple to use as possible. The following exam
                         logging_file='test.log', verbose=1)
 
     guw.evolve()
-    guw.save('Black_Holes.csv')
+    guw.save('NSs_and_BHs.csv')
 
     guw.calculate_microlensing(run_name='example', output_filepath='./GUW_events.ecsv', 
                                years=100, num_workers=-1, collate=True)
@@ -203,7 +203,14 @@ The function takes the following parameters:
 - `append_logging` &mdash; If `True` then the logging file will be appended to. If `False` then the logging file will be overwritten.
 - `verbose` &mdash; The verbosity of the logging messages.
 
+## Citation
 
+My intention is to publish this package in a peer-reviewed journal. In the meantime, if you use this package in your research, please let me know &mdash; I will upload the package to Zenodo so that you can cite it directly. Please also cite the following papers which describe the details of the simulations performed by the package:
+
+- [The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)
+- *Observing the Galactic Underworld* (currently under review)
+
+Please let me know if you use this package. I would love to hear about it and get any feedback you might have!
 
 
 
