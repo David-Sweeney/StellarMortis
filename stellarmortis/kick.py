@@ -1,7 +1,7 @@
 import numpy as np
 
 class NatalKick:
-    def __init__(self, distributions={'Black Hole': 'scaled igoshev young', 'Neutron Star': 'igoshev young'}, sample={}):
+    def __init__(self, distributions={'Black Hole': 'scaled Igoshev2020', 'Neutron Star': 'Igoshev2020'}, sample={}):
         """
         Class for generating natal kicks from a distribution.
         
@@ -173,20 +173,20 @@ def _get_PDF(name):
         rescale = True
     
     # Igoshev (2020) main numbers
-    if name == 'igoshev all':
+    if name == 'Igoshev2020All':
         w = 0.42
         sigma_1 = 128
         sigma_2 = 298
     # Igoshev (2020) numbers for young pulsars
-    elif name == 'igoshev young':
+    elif name == 'Igoshev2020':
         w = 0.20
         sigma_1 = 56
         sigma_2 = 336
-    elif name == 'renzo':
+    elif name == 'Renzo2018':
         w = 0.02
         sigma_1 = 1
         sigma_2 = 16
-    elif name == 'hobbs':
+    elif name == 'Hobbs2005':
         w = 0
         sigma_1 = 0
         sigma_2 = 265

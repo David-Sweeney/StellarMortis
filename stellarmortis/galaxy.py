@@ -21,7 +21,7 @@ def calculate_lifetimes(df):
 
     Adapted from code provided by Sanjib Sharma.
     """
-    with open('../data/stellar_lifetime.pkl', 'rb') as handle:
+    with open('stellar_lifetime.pkl', 'rb') as handle:
         stellar_lifetimes = pickle.load(handle)
     stellar_properties = np.array([np.clip(df['feh'], a_min=-2, a_max=0.49), df['smass']]).T
     df['lifetime'] = 10**stellar_lifetimes(stellar_properties) / 10**9
@@ -29,6 +29,7 @@ def calculate_lifetimes(df):
 
 def load_data(filename):
     '''Load Galaxia data into DataFrame'''
+    assert filename.endswith('.ebf'), 'File must be in ebf format'
     data = ebf.read(filename, '/')
     centre = np.array(data['center'])
     keys = ['px', 'py', 'pz', 'vx', 'vy', 'vz', 'age', 'smass', 'feh', 'popid']
