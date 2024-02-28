@@ -2,3 +2,4 @@
 build/*
 dist/*
 stellarmortis.egg*
+stellarmortis/meta.yaml
