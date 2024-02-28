@@ -48,7 +48,7 @@ To use these files, simply download them and instantiate an `Underworld` object,
     import stellarmortis as sm
     guw = sm.Underworld('path/to/guw_f1e-4_bhm2.35.ebf')
 
-By default the population is tagged as black holes, neutron stars and white dwarfs based on the initial mass, $m_p$ of their progenitor star (provided by GALAXIA). If $m_p < 8 M_{\odot}$, the star is tagged as a white dwarf. If $8 M_{\odot} \leq m_p < 25 M_{\odot}$, the star is tagged as a neutron star. If $m_p \geq 25 M_{\odot}$, the star is tagged as a black hole. This can be changed by accessing the `data` attribute of the `Underworld`, which is a `pandas.DataFrame` object containing the columns `smass` (the mass of the progenitor star $m_p$), `feh` (the metallicity of the progenitor star) `species` (the species of the dead star) and `px`, `py`, `pz`, `vx`, `vy`, `vz` (the position and velocity of the dead star).
+By default the population is tagged as black holes, neutron stars and white dwarfs based on the initial mass, $m_p$, of their progenitor star (provided by GALAXIA). If $m_p < 8 M_{\odot}$, the star is tagged as a white dwarf. If $8 M_{\odot} \leq m_p < 25 M_{\odot}$, the star is tagged as a neutron star. If $m_p \geq 25 M_{\odot}$, the star is tagged as a black hole. This can be changed by accessing the `data` attribute of the `Underworld`, which is a `pandas.DataFrame` object containing the columns `smass` (the initial mass of the progenitor star $m_p$), `feh` (the metallicity of the progenitor star) `species` (the species of the dead star) and `px`, `py`, `pz`, `vx`, `vy`, `vz` (the position and velocity of the dead star).
 
 This `data` attribute can be modified to make whatever changes are desired (or just for inspection). For example, tagging all remnants with $m_p \geq 20 M_{\odot}$ as black holes can be done with the following line of code:
 
@@ -62,7 +62,7 @@ This will remove all objects which are not tagged as a `Black Hole` or `Neutron 
 
 ### Masses
 
-To specify the masses of the remnants the `Mass` class is used. This class is instantiated with a dictionary containing the masses of the remnants. The keys of the dictionary are the species of dead star and the values are the mass of the remnant. The masses can be specified as a single value in solar masses or a function which takes the mass of the progenitor star ($m_p$) as an argument and returns the mass of the remnant in solar masses. 
+To specify the masses of the remnants the `Mass` class is used. This class is instantiated with a dictionary containing the masses of the remnants. The keys of the dictionary are the species of dead star and the values are the mass of the remnant. The masses can be specified as a single value in solar masses or a function which takes the initial mass of the progenitor star ($m_p$) as an argument and returns the mass of the remnant in solar masses. 
 
 To add these masses to the population, the `Mass` object is passed to the `.add_masses()` method of the `Underworld` object.
 
@@ -76,14 +76,14 @@ By default a `Mass` object will be instantiated with the masses as described abo
 In general, if you do not intend to calculate the microlensing events caused by the population then you will not need to specify the mass of the remnants.
 
 ### Natal Kicks
-As demonstrated in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)*, natal kicks play a big role in the distribution of the galactic underworld. The `NatalKick` class provides a simple interface to apply natal kicks to the population of dead stars. The `NatalKick` class is instantiated with a dictionary containing the natal kicks to be applied to each species of dead star. The keys of the dictionary are the species of dead star and the values are the natal kicks to be applied. The natal kick can be specified as a single value in km/s, a string specifiying one of the pre-defined natal kicks or a function which takes the mass of the remnant ($m_r$) and the mass of the progenitor star ($m_p$) as arguments and returns the natal kick in km/s. The pre-defined natal kicks are:
+As demonstrated in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)*, natal kicks play a big role in the distribution of the galactic underworld. The `NatalKick` class provides a simple interface to apply natal kicks to the population of dead stars. The `NatalKick` class is instantiated with a dictionary containing the natal kicks to be applied to each species of dead star. The keys of the dictionary are the species of dead star and the values are the natal kicks to be applied. The natal kick can be specified as a single value in km/s, a string specifiying one of the pre-defined natal kicks or a function which takes the mass of the remnant ($m_r$) and the initial mass of the progenitor star ($m_p$) as arguments and returns the natal kick in km/s. The pre-defined natal kicks are:
 
 - `Hobbs2005` &mdash; The natal kicks from [Hobbs et al. (2005)](https://ui.adsabs.harvard.edu/abs/2005MNRAS.360..974H/abstract).
 - `Igoshev2020` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for the young pulsars.
 - `Igoshev2020All` &mdash; The natal kicks from [Igoshev et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.3663I/abstract) for all measured pulsars.
 - `Renzo2018` &mdash; The natal kicks from [Renzo et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019A&A...624A..66R) which describe the natal kicks experienced by neutron star binaries in which the neutron star remains in the binary.
 
-Each pre-defined natal kick also has a corresponding `scaled` version which scales the natal kicks by a factor of $1.35/m_r$. This is intended to be used on the black holes if the natal kicks are to be scaled by the mass of the remnant (i.e. to provide the same momentum to all neutron stars and black holes). $1.35$ is taken to be the average mass of a neutron star in solar masses.
+Each pre-defined natal kick distribution also has a corresponding `scaled` version which scales the natal kicks by a factor of $1.35/m_r$. This is intended to be used on the black holes if the natal kicks are to be scaled by the mass of the remnant (i.e. to provide the same momentum to all neutron stars and black holes). $1.35 M_{\odot}$ is taken to be the average mass of a neutron star in solar masses.
 
 These natal kicks can then be applied to the population using the `.add_kicks()`. 
 
@@ -141,7 +141,7 @@ For example:
 This will calculate the microlensing events caused by the population of black holes and neutron stars and save the output to `./BH_events.ecsv`.
 
 ### Starting from a CSV file
-If the microlensing events are to be calculated at a later time then the microlensing events can be calculated from a CSV file. This is done by instantiating a `Microlensing` object and calling the `calculate_microlensing()` function. The method takes the following parameters:
+If the microlensing events are to be calculated at a later time then the microlensing events can be calculated from a CSV file. This is done by instantiating a `Microlensing` object and calling the `calculate_microlensing()` function. The function takes the following parameters:
 
 - `filepath` &mdash; The filepath of the CSV file containing the microlensing events.
 - `run_name` &mdash; The name of the run. This will be used to name the output file.
@@ -188,7 +188,9 @@ This will plot the microlensing events caused by the population of black holes a
 
 ### Starting from a CSV/ECSV file
 
-The microlensing events can be plotted using the `plot_microlensing()` function. The method takes the following parameters:
+The microlensing events can be plotted using the `plot_microlensing()` function. This function creates a range of summary plots of the microlensing events.
+
+The function takes the following parameters:
 
 - `filepaths` &mdash; A list of filepaths to the microlensing event files to be plotted.
 - `undersamples` &mdash; A dictionary containing the undersampling factor for each species of dead star. The keys of the dictionary are the species of dead star and the values are the undersampling factor. The undersampling factor is the number of microlensing events to be plotted. For example, if the undersampling factor is $10^4$ then only $1$ in $10^4$ microlensing events will be plotted.

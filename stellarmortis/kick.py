@@ -11,8 +11,9 @@ class NatalKick:
             The distributions to use for black holes and neutron stars. 
             The default is {'Black Hole': 'scaled igoshev young', 'Neutron Star': 'igoshev young'}.
             Options:
-                'igoshev all', 'igoshev young', 'renzo', 'hobbs'
-                'scaled igoshev all', 'scaled igoshev young', 'scaled renzo', 'scaled hobbs'                
+            'Igoshev2020All', 'Igoshev2020', 'Renzo2019', 'Hobbs2005'
+            'scaled Igoshev2020All', 'scaled Igoshev2020', 'scaled Renzo2019', 
+            'scaled Hobbs2005'               
         """
         
         self.string_representation = str(distributions)
@@ -23,10 +24,10 @@ class NatalKick:
                 f'Invalid distribution for {species}'
             if isinstance(distribution, str):
                 if distribution.split()[0] == 'scaled':
-                    assert ' '.join(distribution.split()[1:]) in ['igoshev all', 'igoshev young', 'renzo', 'hobbs'], \
+                    assert ' '.join(distribution.split()[1:]) in ['Igoshev2020All', 'Igoshev2020', 'Renzo2019', 'Hobbs2005'], \
                         f'Invalid distribution for {species}'
                 else:
-                    assert distribution in ['igoshev all', 'igoshev young', 'renzo', 'hobbs'], \
+                    assert distribution in ['Igoshev2020All', 'Igoshev2020', 'Renzo2019', 'Hobbs2005'], \
                         f'Invalid distribution for {species}'
                 
                 # Get the PDF function for the natal kick
@@ -127,8 +128,9 @@ def _get_PDF(name):
     ----------
     name : str
         Name of the distribution. Options:
-            'igoshev all', 'igoshev young', 'renzo', 'hobbs'
-            'scaled igoshev all', 'scaled igoshev young', 'scaled renzo', 'scaled hobbs'
+            'Igoshev2020All', 'Igoshev2020', 'Renzo2019', 'Hobbs2005'
+            'scaled Igoshev2020All', 'scaled Igoshev2020', 'scaled Renzo2019', 
+            'scaled Hobbs2005'
     
     Returns
     -------
@@ -182,7 +184,7 @@ def _get_PDF(name):
         w = 0.20
         sigma_1 = 56
         sigma_2 = 336
-    elif name == 'Renzo2018':
+    elif name == 'Renzo2019':
         w = 0.02
         sigma_1 = 1
         sigma_2 = 16
