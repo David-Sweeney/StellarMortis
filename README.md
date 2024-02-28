@@ -5,7 +5,7 @@
 
 #### Note that this package is still under development and, although functional, is not yet fully documented. If you have any questions or need help using the package, please feel free to contact me (my email is given in the paper below). I will be happy to help you get started.
  
-StellarMortis is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
+StellarMortis, named after *rigor mortis*, is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
 This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (currently under review) with significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
 
