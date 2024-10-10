@@ -9,7 +9,7 @@ class NatalKick:
         ----------
         distributions : dict, optional
             The distributions to use for black holes and neutron stars. 
-            The default is {'Black Hole': 'scaled igoshev young', 'Neutron Star': 'igoshev young'}.
+            The default is {'Black Hole': 'scaled Igoshev2020', 'Neutron Star': 'Igoshev2020'}.
             Options:
             'Igoshev2020All', 'Igoshev2020', 'Renzo2019', 'Hobbs2005'
             'scaled Igoshev2020All', 'scaled Igoshev2020', 'scaled Renzo2019', 

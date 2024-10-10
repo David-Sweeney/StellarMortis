@@ -121,8 +121,16 @@ def approximate_buffer_window(sensitivity, lens_mass, lens_parallax):
                 * np.sqrt(lens_mass * (lens_parallax - bgs_parallax)/u.arcsec)
                 ).decompose() * u.rad).to(u.mas)
 
-    # Appriximation from Kluter et al. (2022)
-    approximation = (theta_E**2/(sensitivity)).to(u.arcsec)
+    # Approximation from Kluter et al. (2022)
+    # If sensitivity is given in angle units
+    if sensitivity.unit.is_equivalent(u.mas):
+        approximation = (theta_E**2/(sensitivity)).to(u.arcsec)
+    elif sensitivity.unit.is_equivalent(u.mag):
+        # If sensitivity is given in magnitude units
+        raise NotImplementedError('Sensitivity in magnitude units not yet implemented')
+        # Make approximation numerically?
+    else:
+        raise ValueError(f'Sensitivity must be in angle or magnitude units, not {sensitivity.unit}')
 
     # Add lens parallax
     approximation = approximation + lens_parallax + abs(bgs_parallax)
@@ -788,7 +796,7 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
                 logger.info(f'{start}-{end} reached index {i}...')
             
             lens = np.array((df.iloc[i]['ra'], df.iloc[i]['dec'], 
-                             df.iloc[i]['pm_ra_cosdec']/np.cos(np.radians(df.iloc[i]['dec'])),
+                             df.iloc[i]['pm_ra_cosdec'],
                              df.iloc[i]['pm_dec']))
             
             lens_mass = df.iloc[i]['mass'] * u.M_sun
@@ -858,7 +866,7 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
                 min_separation, closest_time = check_parallax(lens, lens_parallax*1.01, bgs, bgs_parallax*1.01,
                                                               start_time, years_of_observation, closest_time)
                 
-                event_info.extend([object['source_id'], coords.Longitude(bgs[0]*u.deg), 
+                event_info.extend([object['SOURCE_ID'], coords.Longitude(bgs[0]*u.deg), 
                                    coords.Latitude(bgs[1]*u.deg),
                                    bgs[2]*(u.mas/u.yr),  bgs[3]*(u.mas/u.yr),
                                    object['radial_velocity']*(u.km/u.s), bgs_mag, 
@@ -870,8 +878,8 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
                 # Calculate magnitude of lensing event
                 u_ = min_separation/theta_E
                 
-                relative_speed = np.sqrt((lens[2]*(u.mas/u.yr)*np.cos(np.radians(lens[1])) 
-                                          - bgs[2]*(u.mas/u.yr)*np.cos(np.radians(bgs[1])))**2 
+                relative_speed = np.sqrt((lens[2]*(u.mas/u.yr) 
+                                          - bgs[2]*(u.mas/u.yr))**2 
                                          + (lens[3]*(u.mas/u.yr) - bgs[3]*(u.mas/u.yr))**2)
                 
                 einstein_time = (theta_E/relative_speed).to(u.day)
@@ -1183,7 +1191,7 @@ def parallelised_main(filepath, progress_dir, years, sensitivity, run_name='', s
                 del current_tasks[task]
 
                 # Place the seed back amongst the unstarted tasks
-                with open(unstarted_directory + f'{task_seed[2]}-{task_seed[0]}-{task_seed[1]}', 'w'):
+                with open(unstarted_directory + f'{task_seed[0]}-{task_seed[1]}', 'w'):
                     pass
     
     # All tasks have been finished

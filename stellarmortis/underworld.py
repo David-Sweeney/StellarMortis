@@ -309,12 +309,17 @@ def calculate_microlensing(filepath, run_name, years, collate=True, output_filep
     """
     
     if output_filepath is None:
-        output_filepath = filepath.split('.')[0] + '_' + run_name + '.ecsv'
+        assert filepath.endswith('.csv'), 'Filepath must end with .csv'
+        output_filepath = filepath[:-4] + '_' + run_name + '.ecsv'
     if progress_dir is None:
         progress_dir = os.path.dirname(output_filepath)
         if progress_dir == '':
             progress_dir = '.'
-    assert os.path.isdir(progress_dir), f'Progress directory: "{progress_dir}" does not exist'
+    
+    # Create progress directory if it doesn't exist 
+    if not os.path.isdir(progress_dir):
+        os.makedirs(progress_dir)
+        
     if logger is None:
         logger = get_logger(logging_file, append_logging)
     num_workers = int(num_workers)

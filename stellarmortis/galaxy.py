@@ -1,19 +1,13 @@
 import pickle
-import logging
+import os
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import ebf
 from galpy import potential
 from galpy.potential.mwpotentials import MWPotential2014
 from galpy.orbit import Orbit
-from galpy.util.conversion import get_physical
 from astropy import units as u
-
-from .kick import NatalKick
-from .mass import Mass
 
 def calculate_lifetimes(df):
     """
@@ -21,7 +15,8 @@ def calculate_lifetimes(df):
 
     Adapted from code provided by Sanjib Sharma.
     """
-    with open('stellar_lifetime.pkl', 'rb') as handle:
+    filepath = os.path.join(os.path.dirname(__file__), './stellar_lifetime.pkl')
+    with open(filepath, 'rb') as handle:
         stellar_lifetimes = pickle.load(handle)
     stellar_properties = np.array([np.clip(df['feh'], a_min=-2, a_max=0.49), df['smass']]).T
     df['lifetime'] = 10**stellar_lifetimes(stellar_properties) / 10**9
