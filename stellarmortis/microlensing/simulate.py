@@ -7,6 +7,7 @@ from socket import gethostname
 
 import numpy as np
 import pandas as pd
+import ebf
 from requests.exceptions import RequestException
 import astropy.coordinates as coords
 from astropy.coordinates import SkyCoord
@@ -29,8 +30,8 @@ Gaia.ROW_LIMIT = -1
 
 # Stop ErfaWarnings
 warnings.filterwarnings('ignore', module='erfa')
-
-def load_df_for_skycoords(filepath, start_time, start=0, end=None):
+    
+def load_csv(filepath, start=0, end=None):
     
     # Read in column names from file
     columns = pd.read_csv(filepath, nrows=0).columns
@@ -43,6 +44,41 @@ def load_df_for_skycoords(filepath, start_time, start=0, end=None):
         
     # Skip to correct section of df (add 1 to start since the first row is the header)
     df = pd.read_csv(filepath, names=columns, skiprows=start+1, nrows=nrows)
+    
+    return df
+
+def load_ebf(filepath, start=0, end=None):
+    
+    data = ebf.read(filepath, '/')
+    coords = [data['px'], data['py'], data['pz'], data['vx'], data['vy'], data['vz']]
+    centre = data['center']
+    coords = np.array(coords).T + np.array(centre[:6])
+    
+    df = pd.DataFrame(coords, columns=['px', 'py', 'pz', 'vx', 'vy', 'vz'])
+    df['rtype'] = 'Star'
+    df['R'] = np.linalg.norm(df[['px', 'py']], axis=1)
+    df['mass'] = data['mact']
+    
+    distance_from_earth = np.linalg.norm([data['px'], data['py'], data['pz']], axis=0)
+    
+    # Conversion into apparent magnitudes from Galaxia documentation using CTIO V and R filters
+    apparent_vs = data['ubv_v'] + np.log(100*distance_from_earth) + data['exbv_schlegel']*3.240
+    apparent_rs = data['ubv_r'] + np.log(100*distance_from_earth) + data['exbv_schlegel']*2.634
+    
+    # Compute Gaia G magnitudes using Johnson-Cousins relationships specified in Gaia documentation
+    v_minus_r = apparent_vs - apparent_rs
+    g_mag = apparent_vs + -0.03088 + -0.04653*v_minus_r + -0.8794*v_minus_r**2 + 0.1733*v_minus_r**3
+    df['gmag'] = g_mag
+    
+    return df.iloc[start:end]
+    
+def load_df_for_skycoords(filepath, start_time, start=0, end=None):
+    if filepath.endswith('.csv'):
+        df = load_csv(filepath, start, end)
+    elif filepath.endswith('.ebf'):
+        df = load_ebf(filepath, start_time, start, end)
+    else:
+        raise ValueError('File must be in .csv or .ebf format')
     
     if not set(('ra', 'dec', 'distance', 'pm_ra_cosdec', 'pm_dec', 'radial_velocity')).issubset(df.columns):
     
