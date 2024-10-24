@@ -16,7 +16,7 @@ if __name__ == '__main__':
     sm.plot_microlensing({'Black Hole': 'testtest.ecsv'}, {'Black Hole': 1e4}, output_filepath='./')
     
     # # Use case - perform microlensing on a saved population
-    # guw = Underworld('./test.csv', logging_file='test.log', verbose=1, append_logging=True)
+    # guw = sm.Underworld('./test.csv', logging_file='test.log', verbose=1, append_logging=True)
     # guw.calculate_microlensing(run_name='test', years=[5], num_workers=-1, collate=True)
     
     # Use case - join existing microlensing run
