@@ -29,7 +29,7 @@ Gaia.ROW_LIMIT = -1
 
 # Stop ErfaWarnings
 warnings.filterwarnings('ignore', module='erfa')
-      
+
 def load_df_for_skycoords(filepath, start_time, start=0, end=None):
     
     # Read in column names from file
@@ -410,6 +410,9 @@ def get_background_stars(lens, years_of_observation, sensitivity, lens_mass, len
     r['parallax'].fill_value = 0
     r['radial_velocity'].fill_value = 0
     r = r.filled()
+    
+    # Set minimum parallax value
+    r['parallax'] = np.clip(r['parallax'], 0.0625*u.mas, None)
 
     return r
 

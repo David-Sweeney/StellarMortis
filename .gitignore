@@ -5,10 +5,13 @@ stellarmortis.egg*
 stellarmortis/meta.yaml
 data/*
 plots/*
+tasks/*
 *.log
 *.csv
 *.ecsv
+*.pyc
 KnownIssues.md
 white_dwarf.py
 black_hole.py
 Progress Checking.ipynb
+zofia.py
