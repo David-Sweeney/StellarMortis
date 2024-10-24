@@ -308,8 +308,9 @@ def calculate_microlensing(filepath, run_name, years, collate=True, output_filep
         The verbosity level. Default is 0.
     """
     
+    assert filepath.endswith('.csv') or filepath.endswith('.ebf'), 'Filepath must end with .csv or .ebf'
+    
     if output_filepath is None:
-        assert filepath.endswith('.csv'), 'Filepath must end with .csv'
         output_filepath = filepath[:-4] + '_' + run_name + '.ecsv'
     if progress_dir is None:
         progress_dir = os.path.dirname(output_filepath)
