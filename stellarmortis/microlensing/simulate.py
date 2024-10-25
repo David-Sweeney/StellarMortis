@@ -70,13 +70,19 @@ def load_ebf(filepath, start=0, end=None):
     g_mag = apparent_vs + -0.03088 + -0.04653*v_minus_r + -0.8794*v_minus_r**2 + 0.1733*v_minus_r**3
     df['gmag'] = g_mag
     
-    return df.iloc[start:end]
+    if end is not None:
+        df = df.iloc[start:end]
+    else:
+        df = df.iloc[start:]
+    
+    df = df.reset_index(drop=True)
+    return df
     
 def load_df_for_skycoords(filepath, start_time, start=0, end=None):
     if filepath.endswith('.csv'):
         df = load_csv(filepath, start, end)
     elif filepath.endswith('.ebf'):
-        df = load_ebf(filepath, start_time, start, end)
+        df = load_ebf(filepath, start, end)
     else:
         raise ValueError('File must be in .csv or .ebf format')
     
@@ -101,6 +107,9 @@ def load_df_for_skycoords(filepath, start_time, start=0, end=None):
     return df
 
 def get_file_length(filepath):
+    if filepath.endswith('.ebf'):
+        data = ebf.read(filepath, '/')
+        return len(data['px'])
     with open(filepath, 'r') as f:
         for count, line in enumerate(f):
             pass
@@ -780,7 +789,7 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
         
         assert end is not None, 'End must be specified'
         assert start < end, 'Start must be less than end'
-        assert filepath.endswith('.csv'), 'Filepath must be an .csv file'
+        # assert filepath.endswith('.csv'), 'Filepath must be an .csv file'
 
         if verbose >= 3:
             logger.info(f'Starting main() with: start={start}, end={end}, verbose={verbose}')
