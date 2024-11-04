@@ -205,6 +205,7 @@ def bootstrap_confidence_interval(tables, output_dir, bootstraps=1e3):
         # Calculate most extreme data point
         extreme_value = None
         extreme_data = None
+        
         for i in range(len(data)):
             if plot in ['Shifts', 'Blended Shifts', 'Magnifications', 
                         'Bump Magnitudes', ]:
@@ -628,7 +629,7 @@ def plot(tables, output_dir, plot, bright_threshold=0*u.mag, logger=None, verbos
                 
             sns.kdeplot(longs, bw_adjust=1, color=table.colour, label=table.species)
         
-        sns.kdeplot(np.hstack(all_longs), bw_adjust=1, weights=all_weights, color='k', zorder=1.5, label='All')
+        sns.kdeplot(np.hstack(all_longs), bw_adjust=1, weights=np.hstack(all_weights), color='k', zorder=1.5, label='All')
 
         plt.xlabel('Galactic Longitude (deg)')
         plt.ylabel('Density')
@@ -654,7 +655,7 @@ def plot(tables, output_dir, plot, bright_threshold=0*u.mag, logger=None, verbos
                 
             sns.kdeplot(lats, bw_adjust=1, color=table.colour, label=table.species)
         
-        sns.kdeplot(np.hstack(all_lats), bw_adjust=1, color='k', zorder=1.5, label='All')
+        sns.kdeplot(np.hstack(all_lats), bw_adjust=1, weights=np.hstack(all_weights), color='k', zorder=1.5, label='All')
         
         plt.xlabel('Galactic Latitude (deg)')
         plt.ylabel('Density')

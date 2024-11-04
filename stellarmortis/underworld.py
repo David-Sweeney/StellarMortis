@@ -355,7 +355,7 @@ def plot_microlensing(filepaths, undersamples, output_dir=None, bootstraps=1000,
     ----------
     filepaths : dict of {str: str}
         A dictionary of species and filepaths formatted as {species: filepath}.
-    undersamples : dict of {str: int}
+    undersamples : dict of {str: float}
         A dictionary of species and undersample rates formatted as {species: undersample}.
     output_dir : str, optional
         The directory to save the plots to. If None, the directory of one of the filepaths is used.
