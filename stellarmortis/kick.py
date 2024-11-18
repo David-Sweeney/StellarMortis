@@ -95,7 +95,6 @@ class NatalKick:
         z : float
             z-component of kick velocity in km/s.        
         """
-        
         natal_kick = None
         if isinstance(self.distributions[species], (int, float)):
             natal_kick = self.distributions[species]

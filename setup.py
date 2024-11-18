@@ -21,7 +21,7 @@ LONG_DESCRIPTION = \
 
 setuptools.setup( 
 	name="stellarmortis",
-	version="0.0.9",
+	version="0.0.10",
 	author="David Sweeney", 
 	author_email="david.sweeney@sydney.edu.au", 
 	packages=setuptools.find_packages(), 

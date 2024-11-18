@@ -81,6 +81,10 @@ class Underworld():
         if self.verbose >= 1:
             self.logger.info(f'Loaded galaxy data from {filepath}')
         
+        # Check if the data has a cylindrical coordinate system
+        if not {'R', 'vR', 'vT', 'phi'} <= set(data.columns):
+            data = galaxy.update_cylindrical_coords(data)
+            
         return data, saved
                    
     def filter_species(self, species):
@@ -150,15 +154,18 @@ class Underworld():
         if self.verbose >= 1:
             self.logger.info(f'Added natal kicks to galaxy data: {natal_kicks}')
 
-    def evolve(self, sections=None):
+    def evolve(self, sections=None, duration=None):
         """Evolve the galaxy data.
 
         Args:
         -----
         sections : int, optional
             The number of sections to split the data into. Default is None.
-        verbose : int, optional
-            The verbosity level. Default is 0.
+        duration : int or float, optional
+            The duration to evolve the galaxy data for in Gyr. If None, the duration is
+            based on the age of the star but with the lifetime of the original star 
+            subtracted (so they are evolved for the duration of the remnants life).
+            Default is None.
         """
         df = self.data
         
@@ -173,7 +180,7 @@ class Underworld():
                 self.logger.info('*'*20)
                 self.logger.info(f'Dataframe {i+1}/{sections}')
             section_dfs[i].loc[:, 'velocity'] = np.sqrt(np.sum(section_dfs[i].loc[:, ['vx', 'vy', 'vz']]**2, axis=1))
-            section_dfs[i] = galaxy.calculate_orbits(section_dfs[i], logger=self.logger, verbose=self.verbose)
+            section_dfs[i] = galaxy.calculate_orbits(section_dfs[i], duration=duration, logger=self.logger, verbose=self.verbose)
             section_dfs[i] = galaxy.tag_escaping(section_dfs[i])
             
         self.data = pd.concat(section_dfs)

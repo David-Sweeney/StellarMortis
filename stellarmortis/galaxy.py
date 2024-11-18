@@ -38,7 +38,7 @@ def load_data(filename):
     df['age'] = 10**df['age'] / 10**9
 
     df = calculate_lifetimes(df)
-
+    
     # Make data centred on galactic centre
     df.loc[:, ['px', 'py', 'pz', 'vx', 'vy', 'vz']] += centre
 
@@ -52,6 +52,9 @@ def load_data(filename):
     
     # Make all remnants invisible by default
     df['gmag'] = np.inf
+    
+    # Remove remnants which have not died (i.e. are still their progenitor)
+    df = df.loc[df['age'] >= df['lifetime']]
 
     return df
 
@@ -73,7 +76,6 @@ def add_kicks(df, natal_kicks, logger=None, verbose=0):
             logger.info(f'Creating kicks, progress = {100 * prog / df.shape[0]:.0f}%')
 
         vx, vy, vz = natal_kicks.get_kick(df.loc[i, 'rtype'], df.loc[i, 'mass'], df.loc[i, 'smass'])
-
         df.loc[i, ['vx', 'vy', 'vz']] += np.array([vx, vy, vz])
 
     return df
