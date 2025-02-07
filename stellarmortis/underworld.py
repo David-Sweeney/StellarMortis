@@ -275,7 +275,8 @@ class Underworld():
         plot_microlensing(filepaths, undersamples, logger=self.logger, verbose=self.verbose, **kwargs)
 
 def calculate_microlensing(filepath, run_name, years, collate=True, output_filepath=None, 
-                           progress_dir=None, sensitivity=1*u.uas, num_workers=1, start=0, end=None,
+                           progress_dir=None, sensitivity=1*u.uas, parallax=None, 
+                           num_workers=1, start=0, end=None,
                            logger=None, logging_file=None, append_logging=True, verbose=1):
     """Calculate microlensing for a given galaxy data file.
     
@@ -298,6 +299,11 @@ def calculate_microlensing(filepath, run_name, years, collate=True, output_filep
         output_filepath is used.
     sensitivity : astropy Angle, optional
         The sensitivity of the simulation to microlensing events. Default is 1 microarcsecond.
+    parallax : str or None
+        Whether to use parallax in the calculations. Options are:
+            'large' - Only use stars with large parallaxes (parallax > 3*error)
+            'capped' - Cap the minimum parallax at 0.0625 mas
+            None - Exclude only stars with negative parallaxes by >5*error (default)
     num_workers : int, optional
         The number of workers to use. Default is 1.
     start : int, optional
@@ -337,7 +343,7 @@ def calculate_microlensing(filepath, run_name, years, collate=True, output_filep
     
     # Should remove lenses > 20 kpc away *** TODO
     step_size = microlensing.parallelised_main(filepath, progress_dir, years, sensitivity, run_name, start=start, end=end, 
-                                               num_workers=num_workers, logger=logger, verbose=verbose)
+                                               parallax=parallax, num_workers=num_workers, logger=logger, verbose=verbose)
     
     if collate:
         if end is None:
@@ -376,6 +382,15 @@ def plot_microlensing(filepaths, undersamples, output_dir=None, bootstraps=1000,
         of microlensing events. Default is True.
     save_summary : bool, optional
         Whether to save a summary of the microlensing data. Default is True.
+    logger : logging.Logger, optional
+        The logger to use. If None, a new logger is created.
+    logging_file : str, optional
+        The filepath to save the logging to. If None and logger is None, logging is 
+        printed to stdout.
+    append_logging : bool, optional
+        Whether to append to the logging file. Default is True.
+    verbose : int, optional
+        The verbosity level. Default is 1.
     """
     
     # Set output dir to the same as one of the filepaths if not specified

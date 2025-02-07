@@ -456,12 +456,12 @@ def get_background_stars(lens, years_of_observation, sensitivity, lens_mass, len
     r['radial_velocity'].fill_value = 0
     r = r.filled()
     
-    # Set minimum parallax value
-    r['parallax'] = np.clip(r['parallax'], 0.0625*u.mas, None)
+    # # Set minimum parallax value
+    # r['parallax'] = np.clip(r['parallax'], 0.0625*u.mas, None)
 
     return r
 
-def filter_background_stars(lens_parallax, background_stars):
+def filter_background_stars(lens_parallax, background_stars, parallax=None):
     """
     Filter out background stars which do not match the criteria.
 
@@ -484,8 +484,15 @@ def filter_background_stars(lens_parallax, background_stars):
     """
 
     background_stars = background_stars[background_stars['parallax'] < lens_parallax]
-    background_stars = background_stars[background_stars['parallax']
-                                        + 5*background_stars['parallax_error'] > 0]
+    if parallax == 'large':
+        background_stars = background_stars[background_stars['parallax_over_error'] > 3]
+    elif parallax == 'capped':
+        background_stars['parallax'] = np.clip(background_stars['parallax'], 0.0625*u.mas, None)
+    elif parallax is None:
+        background_stars = background_stars[background_stars['parallax']
+                                            + 5*background_stars['parallax_error'] > 0]
+    else:
+        raise ValueError(f'Parallax must be either "large", "capped" or None, not {parallax}')
     
     return background_stars
 
@@ -710,6 +717,10 @@ def collate_files(progress_filepaths, progress_dir, output_filepath, run_name, d
         assert (metadata is None 
                 or table.meta['Years of observation'] == metadata['Years of observation']), \
             f'Years of observation do not match for {filepath}'
+        assert metadata is None or table.meta['Sensitivity'] == metadata['Sensitivity'], \
+            f'Sensitivity does not match for {filepath}'
+        assert metadata is None or table.meta['Parallax'] == metadata['Parallax'], \
+            f'Parallax filtering does not match for {filepath}'
         if big_events_only:
             table = table[table['blended centroid shift'] >= 1e-2*u.mas]
             # table = table[table['lensing event'].astype(bool)]
@@ -747,7 +758,7 @@ def collate_files(progress_filepaths, progress_dir, output_filepath, run_name, d
     return
 
 @ray.remote(num_cpus=0.2)
-def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, start=0, end=None, run_name='', verbose=0):
+def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, start=0, end=None, parallax=None, run_name='', verbose=0):
     """
     Runs the lensing calculation pipeline from loading in the data to saving the
     data out.
@@ -763,6 +774,11 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
         The index to start with in the DataFrame
     end : int
         The index to go up to in the DataFrame (exclusive)
+    parallax : str or None
+        Whether to use parallax in the calculations. Options are:
+            'large' - Only use stars with large parallaxes (parallax > 3*error)
+            'capped' - Cap the minimum parallax at 0.0625 mas
+            None - Exclude only stars with negative parallaxes by >5*error (default)
     species : str
         The lens population to use. The options are:
             'underworld' -  black holes and neutron stars
@@ -839,6 +855,7 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
         # Ensure logging interval can't be 0, which would cause an error
         logging_interval = max((end - start)//logs, 1)
 
+        # Loop over each lens
         for i in range(len(df)):
             if (i % logging_interval == 0) and (verbose >= 1):
                 logger.info(f'{start}-{end} reached index {i}...')
@@ -867,7 +884,7 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
             # Filter objects
             if verbose >= 3:
                 logger.info('Filtering background stars')
-            objects = filter_background_stars(lens_parallax, objects)
+            objects = filter_background_stars(lens_parallax, objects, parallax=parallax)
 
             if len(objects) == 0:
                 event_info = lens_info
@@ -996,7 +1013,9 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
                               'Years of observation': years_of_observation,
                               'Corrected major image shift': True,
                               'Gaia table': "gaiadr3.gaia_source",
-                              'GUW file': filepath})
+                              'GUW file': filepath,
+                              'Sensitivity': sensitivity,
+                              'Parallax': parallax})
         
         out_qt['event time'].format = 'jd'
         out_qt['einstein angle'] = out_qt['einstein angle'].to(u.mas)
@@ -1022,7 +1041,8 @@ def main(filepath, output_dir, years_of_observation, sensitivity, logging_file, 
 
     return 1
 
-def parallelised_main(filepath, progress_dir, years, sensitivity, run_name='', start=0, end=None, num_workers=1, logger=None, verbose=0):
+def parallelised_main(filepath, progress_dir, years, sensitivity, run_name='', start=0, end=None, parallax=None, num_workers=1, 
+                      logger=None, verbose=0):
     """
     Runs main in parallel using Ray.
 
@@ -1043,6 +1063,11 @@ def parallelised_main(filepath, progress_dir, years, sensitivity, run_name='', s
             Defaults to 0.
         end (int, optional): Final index of the data for which to calculate incidence.
             Defaults to None which means that the final index is set to be the length of the data
+        parallax (str or None, optional): 
+            Whether to use parallax in the calculations. Options are:
+                'large' - Only use stars with large parallaxes (parallax > 3*error)
+                'capped' - Cap the minimum parallax at 0.0625 mas
+                None - Exclude only stars with negative parallaxes by >5*error (default)
         verbose (int, optional): Specifies how much information should be outputted to 
             logging file. Defaults to 0. Large values also report information from smaller 
             values:
@@ -1184,7 +1209,8 @@ def parallelised_main(filepath, progress_dir, years, sensitivity, run_name='', s
                 continue
                 
             # Start running new task
-            obj = main.remote(filepath, progress_dir, years, sensitivity, logging_file, start=start, end=end, run_name=run_name, verbose=verbose)
+            obj = main.remote(filepath, progress_dir, years, sensitivity, logging_file, start=start, end=end, parallax=parallax, 
+                              run_name=run_name, verbose=verbose)
             logger.info(f'{gethostname()} is starting: {start}-{end}') # ***
 
             # Add task info to current_tasks

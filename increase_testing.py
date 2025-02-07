@@ -9,6 +9,7 @@ if __name__ == '__main__':
     guw = sm.Underworld(filename, species=['White Dwarf'], 
                         logging_file='test.log', verbose=1)
     guw.evolve()
+    guw.save('./data/white_dwarfs_f1e-3.csv')
     
     
     all_data = [guw.data]
