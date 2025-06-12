@@ -328,7 +328,11 @@ def calculate_microlensing(filepath, run_name, years, collate=True, output_filep
     if progress_dir is None:
         progress_dir = os.path.dirname(output_filepath)
         if progress_dir == '':
-            progress_dir = '.'
+            # Check if './data' exists:
+            if os.path.isdir('./data'):
+                progress_dir = './data'
+            else:
+                progress_dir = '.'
     
     # Create progress directory if it doesn't exist 
     if not os.path.isdir(progress_dir):
