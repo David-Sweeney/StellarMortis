@@ -7,7 +7,7 @@
  
 StellarMortis, named after *rigor mortis*, is a Python package which allows you to create populations of dead stars&mdash;*galactic underworlds*&mdash;and to simulate their effects as seen through microlensing.
 
-This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *Observing the Galactic Underworld* (currently under review) with significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
+This package combines the code developed in *[The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)* and *[Observing the Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2024MNRAS.531.2433S/abstract)* with significant modifications and extensions. Particularly, the code has been restructured to be more modular and to allow the population of dead stars generated to have their microlensing events seemlessly simulated.
 
 ## Installation
 To install StellarMortis simply use pip:
@@ -205,10 +205,10 @@ The function takes the following parameters:
 
 ## Citation
 
-My intention is to publish this package in a peer-reviewed journal. In the meantime, if you use this package in your research, please let me know &mdash; I will upload the package to Zenodo so that you can cite it directly. Please also cite the following papers which describe the details of the simulations performed by the package:
+My intention is to publish this package in a peer-reviewed journal. In the meantime, if you use this package in your research, please let me know (so I can read it!) and cite the Zenodo repository (https://doi.org/10.5281/zenodo.17970197). Please also cite the following papers which describe the details of the simulations performed by the package:
 
 - [The Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.4971S/abstract)
-- *Observing the Galactic Underworld* (currently under review)
+- [Observing the Galactic Underworld](https://ui.adsabs.harvard.edu/abs/2024MNRAS.531.2433S/abstract)
 
 Please let me know if you use this package. I would love to hear about it and get any feedback you might have!
 
